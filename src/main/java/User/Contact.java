@@ -23,7 +23,7 @@ public class Contact {
 
     // 构造函数
     public Contact(String name, String telephone, String mobile, String instantMessaging, String email, String homepage,
-                   String birthday, String photo, String workplace, String homeAddress, String zipCode, String group, String note) {
+                   String birthday, String photo, String workplace, String homeAddress, String zipCode, String note) {
         this.name = name;
         this.telephone = telephone;
         this.mobile = mobile;
@@ -35,7 +35,7 @@ public class Contact {
         this.workplace = workplace;
         this.homeAddress = homeAddress;
         this.zipCode = zipCode;
-        this.group = group;
+        this.group = null;
         this.note = note;
     }
 
