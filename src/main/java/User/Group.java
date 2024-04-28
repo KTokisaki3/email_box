@@ -21,10 +21,16 @@ public class Group {
 
     public void addContact(Contact contact) {
         contacts.add(contact);
+        contact.setGroup(getName());
     }
 
     public void removeContact(Contact contact) {
         contacts.remove(contact);
+        contact.setGroup(null);
+    }
+
+    public boolean containContact(Contact contact){
+        return contacts.contains(contact);
     }
 
     public String getName() {

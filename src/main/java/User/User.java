@@ -43,7 +43,7 @@ public class User {
         }
         groups.add(group);
         for(Contact contact : group.getContacts()){
-            otherContacts.remove(contact);
+            otherContacts.remove(contact);      //从未分组里移除
         }
         return true;
     }
@@ -52,18 +52,19 @@ public class User {
     public boolean removeContact(Contact contact){
         if(allContacts.contains(contact)){
             allContacts.remove(contact);
+            if(contact.getGroup().isEmpty()){
+                otherContacts.remove(contact);
+                return true;
+            }
             for(Group group : groups){
-                if(group.getContacts().contains(contact)){
+                if(group.containContact(contact)){
                     group.removeContact(contact);
                     return true;
                 }
             }
-            otherContacts.remove(contact);
-            return true;
-        }else {
-            System.out.println("需要删除的联系人不存在！");
-            return false;
         }
+        System.out.println("需要删除的联系人不存在！");
+        return false;
     }
 
     //删除联系组,先选中联系组
@@ -104,7 +105,7 @@ public class User {
             System.out.println("联系组不存在！");
             return false;
         }
-        if(group.getContacts().contains(contact)){
+        if(group.containContact(contact)){
             System.out.println("联系人已经在联系组！");
             contact.setGroup(group.getName());
             return true;
@@ -112,14 +113,12 @@ public class User {
             if(otherContacts.contains(contact)){
                 otherContacts.remove(contact);
                 group.addContact(contact);
-                contact.setGroup(group.getName());
                 return true;
             }
             for(Group g : groups){
-                if(g.getContacts().contains(contact)){
+                if(g.containContact(contact)){
                     g.removeContact(contact);
                     group.addContact(contact);
-                    contact.setGroup(group.getName());
                     return true;
                 }
             }
@@ -142,8 +141,7 @@ public class User {
             System.out.println("联系人不在联系组中！");
         }else {
             for(Group group : groups){
-                if(contact.getGroup().equals(group.getName())){
-                    contact.setGroup(null);
+                if(group.containContact(contact)){
                     group.removeContact(contact);
                     otherContacts.add(contact);
                     return;
@@ -158,9 +156,6 @@ public class User {
             removeFromGroup(contact);
         }
     }
-
-    //查询联系人
-    public void listContacts(){}
 
     //搜索联系人
     public void searchContact(){}
