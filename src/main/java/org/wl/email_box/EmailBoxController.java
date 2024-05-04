@@ -3,9 +3,14 @@ package org.wl.email_box;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
 
 /**
@@ -16,41 +21,146 @@ import javafx.scene.layout.VBox;
  */
 public class EmailBoxController {
     @FXML
-    private Button creat_contact_button;
+    private Button addContactButton;
 
     @FXML
-    private Button creat_contact_group_button;
+    private Button addGroupButton;
 
     @FXML
-    private Button find_button;
+    private MenuItem allMenuItem;
 
     @FXML
-    private TextField find_lxr_textfield;
+    private TableColumn<?, ?> birthdayTabelColumn;
 
     @FXML
-    private VBox menubox;
+    private TableView<?> contactTableView;
 
     @FXML
-    private ComboBox<?> more;
+    private Button deleteContactButton;
 
     @FXML
-    private ToolBar tools;
+    private Button deleteGroupButton;
 
     @FXML
-    private VBox viewbox;
+    private Button editContactButton;
 
     @FXML
-    void creatContact(ActionEvent event) {
+    private TableColumn<?, ?> emailTabelColumn;
+
+    @FXML
+    private MenuItem exitMenuItem;
+
+    @FXML
+    private MenuItem exportMenuItem;
+
+    @FXML
+    private Menu fileMenu;
+
+    @FXML
+    private TreeView<?> groupTreeView;
+
+    @FXML
+    private TableColumn<?, ?> homeAddressTabelColumn;
+
+    @FXML
+    private TableColumn<?, ?> homepageTabelColumn;
+
+    @FXML
+    private MenuItem importMenuItem;
+
+    @FXML
+    private VBox inputBox;
+
+    @FXML
+    private TableColumn<?, ?> instantMessagingTabelColumn;
+
+    @FXML
+    private Menu listMenu;
+
+    @FXML
+    private MenuBar menuBar;
+
+    @FXML
+    private TableColumn<?, ?> mobileTabelColumn;
+
+    @FXML
+    private TableColumn<?, ?> nameTabelColumn;
+
+    @FXML
+    private TableColumn<?, ?> noteTabelColumn;
+
+    @FXML
+    private TableColumn<?, ?> photoTabelColumn;
+
+    @FXML
+    private VBox searchBox;
+
+    @FXML
+    private Label searchLabel;
+
+    @FXML
+    private TextField searchTextField;
+
+    @FXML
+    private TableColumn<?, ?> telephoneTabelColumn;
+
+    @FXML
+    private MenuItem ungroupMenuItem;
+
+    @FXML
+    private TableColumn<?, ?> workplaceTabelColumn;
+
+    @FXML
+    private TableColumn<?, ?> zipCodeTabelColumn;
+
+    @FXML
+    void addContact(ActionEvent event) {
 
     }
 
     @FXML
-    void creatContactGroup(ActionEvent event) {
+    void addGroup(ActionEvent event) {
 
     }
 
     @FXML
-    void findContact(ActionEvent event) {
+    void deleteContact(ActionEvent event) {
 
     }
+
+    @FXML
+    void deleteGroup(ActionEvent event) {
+
+    }
+
+    @FXML
+    void editContact(ActionEvent event) {
+
+    }
+
+    @FXML
+    void exitApp(ActionEvent event) {
+
+    }
+
+    @FXML
+    void exportFile(ActionEvent event) {
+
+    }
+
+    @FXML
+    void importFile(ActionEvent event) {
+
+    }
+
+    @FXML
+    void listAll(ActionEvent event) {
+
+    }
+
+    @FXML
+    void listUngroup(ActionEvent event) {
+
+    }
+
 }

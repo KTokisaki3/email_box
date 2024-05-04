@@ -1,5 +1,8 @@
 package User;
 
+import tool.CSVExporter;
+import tool.VCardExporter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -160,11 +163,6 @@ public class User {
     //搜索联系人
     public void searchContact(){}
 
-    //导入
-    public void importContacts(){}
-
-    //导出
-    public void exportContacts(){}
 
     public List<Contact> getAllContacts() {
         return allContacts;
