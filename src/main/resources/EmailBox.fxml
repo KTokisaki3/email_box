@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -10,10 +11,8 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wl.email_box.EmailBoxController">
    <top>
@@ -45,18 +44,18 @@
    <center>
       <TableView fx:id="contactTableView" prefHeight="284.0" prefWidth="175.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="nameTabelColumn" prefWidth="75.0" text="Name" />
-          <TableColumn fx:id="telephoneTabelColumn" prefWidth="75.0" text="Telephone" />
-            <TableColumn fx:id="mobileTabelColumn" prefWidth="75.0" text="Mobile" />
-            <TableColumn fx:id="instantMessagingTabelColumn" prefWidth="75.0" text="InstantMessaging" />
-            <TableColumn fx:id="emailTabelColumn" prefWidth="75.0" text="Email" />
-            <TableColumn fx:id="homepageTabelColumn" prefWidth="75.0" text="Homepage" />
-            <TableColumn fx:id="birthdayTabelColumn" prefWidth="75.0" text="Birthday" />
-            <TableColumn fx:id="photoTabelColumn" prefWidth="75.0" text="photo" />
-            <TableColumn fx:id="workplaceTabelColumn" prefWidth="75.0" text="Workplace" />
-            <TableColumn fx:id="homeAddressTabelColumn" prefWidth="75.0" text="HomeAddress" />
-            <TableColumn fx:id="zipCodeTabelColumn" prefWidth="75.0" text="ZipCode" />
-            <TableColumn fx:id="noteTabelColumn" prefWidth="75.0" text="Note" />
+          <TableColumn fx:id="nameTableColumn" prefWidth="104.0" text="Name" />
+          <TableColumn fx:id="telephoneTableColumn" prefWidth="75.0" text="Telephone" />
+            <TableColumn fx:id="mobileTableColumn" prefWidth="75.0" text="Mobile" />
+            <TableColumn fx:id="instantMessagingTableColumn" prefWidth="75.0" text="InstantMessaging" />
+            <TableColumn fx:id="emailTableColumn" prefWidth="75.0" text="Email" />
+            <TableColumn fx:id="homepageTableColumn" prefWidth="75.0" text="Homepage" />
+            <TableColumn fx:id="birthdayTableColumn" prefWidth="75.0" text="Birthday" />
+            <TableColumn fx:id="photoTableColumn" prefWidth="75.0" text="photo" />
+            <TableColumn fx:id="workplaceTableColumn" prefWidth="75.0" text="Workplace" />
+            <TableColumn fx:id="homeAddressTableColumn" prefWidth="75.0" text="HomeAddress" />
+            <TableColumn fx:id="zipCodeTableColumn" prefWidth="75.0" text="ZipCode" />
+            <TableColumn fx:id="noteTableColumn" prefWidth="75.0" text="Note" />
         </columns>
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -64,7 +63,7 @@
       </TableView>
    </center>
    <left>
-      <VBox fx:id="inputBox" prefHeight="284.0" prefWidth="111.0" spacing="10.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="inputBox" prefHeight="274.0" prefWidth="128.0" spacing="10.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
@@ -74,7 +73,7 @@
             <Button fx:id="deleteContactButton" mnemonicParsing="false" onAction="#deleteContact" prefWidth="99.0" text="DeleteContact" />
             <Button fx:id="deleteGroupButton" mnemonicParsing="false" onAction="#deleteGroup" text="DeleteGroup" />
             <Button fx:id="editContactButton" mnemonicParsing="false" onAction="#editContact" text="EditContact" />
-            <TreeView fx:id="groupTreeView" editable="true" prefHeight="550.0" prefWidth="259.0" />
+            <ListView fx:id="groupListView" prefHeight="372.0" prefWidth="99.0" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

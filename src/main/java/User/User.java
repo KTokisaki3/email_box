@@ -23,7 +23,7 @@ public class User {
         this.otherContacts = new ArrayList<>();
     }
 
-    public User(ArrayList<Contact> allContacts) {
+    public User(List<Contact> allContacts) {
         this.allContacts = allContacts;
         setGroups();
         setOtherContacts();
@@ -163,6 +163,14 @@ public class User {
     //搜索联系人
     public void searchContact(){}
 
+    public List<Contact> listFromGroup(String groupName){
+        for(Group group : groups){
+            if(groupName.equals(group.getName())){
+                return group.getContacts();
+            }
+        }
+        return null;
+    }
 
     public List<Contact> getAllContacts() {
         return allContacts;

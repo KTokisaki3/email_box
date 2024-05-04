@@ -23,10 +23,9 @@ public class EmailBoxApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("EmailBox");
-        Pane load = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("EmailBox.fxml")));
+        Pane load = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/EmailBox.fxml")));
         Scene scene = new Scene(load);
         stage.setScene(scene);
-        stage.setResizable(false);
         stage.show();
     }
 }
