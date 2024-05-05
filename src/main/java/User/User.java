@@ -35,6 +35,9 @@ public class User {
             return false;
         }
         allContacts.add(contact);
+        if(contact.getGroup().isEmpty()) {
+            otherContacts.add(contact);
+        }
         return true;
     }
 
@@ -139,7 +142,7 @@ public class User {
     }
 
     //将联系人从分组删除
-    public void removeFromGroup(Contact contact){
+    public boolean removeFromGroup(Contact contact){
         if(contact.getGroup().isEmpty()){
             System.out.println("联系人不在联系组中！");
         }else {
@@ -147,26 +150,32 @@ public class User {
                 if(group.containContact(contact)){
                     group.removeContact(contact);
                     otherContacts.add(contact);
-                    return;
+                }
+            }
+            for (Group group : groups){
+                if(group.containContact(contact)){
+                    return false;
                 }
             }
             System.out.println("联系组不存在！");
             contact.setGroup(null);
         }
+        return true;
     }
-    public void removeFromGroup(List<Contact> contacts){
+    public boolean removeFromGroup(List<Contact> contacts){
         for(Contact contact : contacts){
-            removeFromGroup(contact);
+            if(!removeFromGroup(contact)){
+                return false;
+            }
         }
+        return true;
     }
 
-    //搜索联系人
-    public void searchContact(){}
-
-    public List<Contact> listFromGroup(String groupName){
+    //根据组名返回组
+    public Group findGroup(String groupName){
         for(Group group : groups){
             if(groupName.equals(group.getName())){
-                return group.getContacts();
+                return group;
             }
         }
         return null;

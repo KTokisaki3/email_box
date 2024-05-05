@@ -6,13 +6,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import tool.CSVExporter;
 import tool.CSVImporter;
+import tool.VCardExporter;
 import tool.VCardImporter;
 
 import java.io.File;
@@ -26,6 +27,9 @@ import java.util.List;
  * @Date : 2024-04-27 15:45
  */
 public class EmailBoxController {
+    @FXML
+    private Button StartSearchButton;
+
     @FXML
     private Button addContactButton;
 
@@ -119,11 +123,11 @@ public class EmailBoxController {
     @FXML
     private TableColumn<Contact, String> zipCodeTableColumn;
 
-    private List<Contact> chosenContacts;                 //选中联系人,便于一些操作
+    private List<Contact> chosenContacts;                    //选中联系人
+
+    private String chosenGroupName;                             //选中组
 
     private User user;
-
-    private ObservableList<Contact> data;
 
     public EmailBoxController(){
         user = new User();
@@ -133,7 +137,13 @@ public class EmailBoxController {
         groupListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         contactTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         groupListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            setTableView(user.listFromGroup(newValue));
+            chosenGroupName = newValue;
+            setTableView(user.findGroup(chosenGroupName).getContacts());
+        });
+        contactTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
+            if(newValue != null) {
+                selectedContact(newValue);
+            }
         });
     }
 
@@ -146,25 +156,83 @@ public class EmailBoxController {
         if(user.addContact(contact)){
             setTableView(user.getAllContacts());
         }else{
-            System.out.println("add error");
+            System.out.println("add contact fail");
         }
     }
 
     @FXML
     void addGroup(ActionEvent event) {
-
+        if(chosenContacts.isEmpty()){
+            System.out.println("No selected contacts");
+            return;
+        }
+        boolean flag = false;
+        for(Contact contact : chosenContacts){
+            if(!contact.getGroup().isEmpty()){
+                flag = true;
+                break;
+            }
+        }
+        if(flag){
+            System.out.println("selected contacts has group");
+            return;
+        }
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setHeaderText("输⼊组名: ");
+        dialog.showAndWait().ifPresentOrElse(
+                result -> {
+                    Group group = new Group(result);
+                    for(Contact contact : chosenContacts){
+                        group.addContact(contact);
+                    }
+                    if(user.addGroup(group)){
+                        //刷新界面
+                        setListView();
+                        setTableView(user.getAllContacts());
+                    }else{
+                        System.out.println("add group fail");
+                    }
+                },
+                () -> System.out.println("cancel")
+        );
     }
 
     @FXML
     void deleteContact(ActionEvent event) {
-
+        if(chosenContacts.isEmpty()){
+            System.out.println("No select contact");
+            return;
+        }
+        if(chosenContacts.size() == 1){
+            Contact contact = chosenContacts.get(0);
+            if(user.removeContact(contact)){
+                //刷新界面
+                setListView();
+                setTableView(user.getAllContacts());
+            }else {
+                System.out.println("delete contact fail");
+            }
+        }else{
+            System.out.println("select over one");
+        }
     }
 
     @FXML
     void deleteGroup(ActionEvent event) {
-
+        if(chosenGroupName.isEmpty()){
+            System.out.println("No selected group");
+            return;
+        }
+        if(user.removeGroup(user.findGroup(chosenGroupName))){
+            //刷新界面
+            setListView();
+            setTableView(user.getAllContacts());
+        }else {
+            System.out.println("delete group fail");
+        }
     }
 
+    //编辑联系人，如何处理联系人分组改变
     @FXML
     void editContact(ActionEvent event) {
 
@@ -177,7 +245,39 @@ public class EmailBoxController {
 
     @FXML
     void exportFile(ActionEvent event) {
-
+        ChoiceDialog<String> choiceDialog = new ChoiceDialog<>("ALL","ALL","SELECTED");
+        choiceDialog.setTitle("Export");
+        choiceDialog.setHeaderText("选择要导出的联系人：");
+        choiceDialog.showAndWait().ifPresentOrElse(
+                res -> {
+                    if(res.equals("ALL")){
+                        exportFormChoose(user.getAllContacts());
+                    }else if(res.equals("SELECTED")){
+                        exportFormChoose(chosenContacts);
+                    }else {System.out.println("type select error");}
+                },
+                ()->{System.out.println("cancel");}
+        );
+    }
+    //选择导出文件格式
+    private void exportFormChoose(List<Contact> contacts){
+        if(contacts.isEmpty()){
+            System.out.println("Contacts is empty");
+            return;
+        }
+        ChoiceDialog<String> dialog = new ChoiceDialog<>("CSV","CSV","vCard");
+        dialog.setTitle("Export");
+        dialog.setHeaderText("选择导出文件格式：");
+        dialog.showAndWait().ifPresentOrElse(
+                result -> {
+                    if(result.equals("CSV")){
+                        CSVExporter.exportContacts(contacts);
+                    }else if(result.equals("vCard")){
+                        VCardExporter.exportContacts(contacts);
+                    }else {System.out.println("type select error");}
+                },
+                () -> {System.out.println("no select");}
+        );
     }
 
     @FXML
@@ -195,9 +295,7 @@ public class EmailBoxController {
                 System.out.println("file type error");
             }
             //更新界面
-            for(Group group : user.getGroups()){
-                groupListView.getItems().add(group.getName());
-            }
+            setListView();
             setTableView(user.getAllContacts());
         }
     }
@@ -212,8 +310,8 @@ public class EmailBoxController {
         setTableView(user.getOtherContacts());
     }
 
-    void setTableView(List<Contact> contacts){
-        data = FXCollections.observableList(contacts);
+    private void setTableView(List<Contact> contacts){
+        ObservableList<Contact> data = FXCollections.observableList(contacts);
         contactTableView = new TableView<>(data);
         nameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         telephoneTableColumn.setCellValueFactory(new PropertyValueFactory<>("telephone"));
@@ -229,4 +327,29 @@ public class EmailBoxController {
         noteTableColumn.setCellValueFactory(new PropertyValueFactory<>("node"));
     }
 
+    private void setListView(){
+        for(Group group : user.getGroups()){
+            groupListView.getItems().add(group.getName());
+        }
+    }
+
+    private void selectedContact(Contact contact){
+        chosenContacts = contactTableView.getSelectionModel().getSelectedItems();
+    }
+
+
+    //搜索
+    @FXML
+    void startSearch(ActionEvent event) {
+        searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            List<Contact> contacts = contactTableView.getItems();
+            contactTableView.getItems().clear();
+            // 根据搜索关键字过滤联系人列表,可优化
+            for (Contact contact : contacts) {
+                if (contact.getName().toLowerCase().contains(newValue.toLowerCase())) {
+                    contactTableView.getItems().add(contact);
+                }
+            }
+        });
+    }
 }

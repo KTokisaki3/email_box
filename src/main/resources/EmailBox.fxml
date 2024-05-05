@@ -86,8 +86,14 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
          <children>
-            <Label fx:id="searchLabel" text="Search:" />
-            <TextField fx:id="searchTextField" prefHeight="0.0" prefWidth="580.0" />
+            <Label fx:id="searchLabel" prefHeight="42.0" prefWidth="136.0" text="Search:">
+               <graphic>
+                  <Button fx:id="StartSearchButton" mnemonicParsing="false" onAction="#startSearch" prefHeight="30.0" prefWidth="56.0" text="Start" />
+               </graphic></Label>
+            <TextField fx:id="searchTextField" prefHeight="0.0" prefWidth="580.0">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin></TextField>
          </children>
       </VBox>
    </bottom>
