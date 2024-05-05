@@ -6,8 +6,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -152,7 +154,100 @@ public class EmailBoxController {
         //
         //
         //contact为创建新的联系人
-        Contact contact = new Contact();
+        //创建新窗口
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setHeaderText("输⼊你的姓名: ");
+        GridPane gridPane = new GridPane();
+        gridPane.setPadding(new Insets(10));
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+
+        // 第一个文本框和标签
+        Label nameLabel = new Label("name:");
+        TextField nameField = new TextField();
+        gridPane.add(nameLabel, 0, 0);
+        gridPane.add(nameField, 1, 0);
+
+        // 第二个文本框和标签
+        Label telephoneLabel = new Label("telephone:");
+        TextField telephoneField = new TextField();
+        gridPane.add(telephoneLabel, 0, 1);
+        gridPane.add(telephoneField, 1, 1);
+
+        Label mobileLabel = new Label("mobile:");
+        TextField mobileField = new TextField();
+        gridPane.add(mobileLabel, 0, 2);
+        gridPane.add(mobileField, 1, 2);
+
+        Label instantMessagingLabel = new Label("instantMessaging:");
+        TextField instantMessagingField = new TextField();
+        gridPane.add(instantMessagingLabel, 0, 3);
+        gridPane.add(instantMessagingField, 1, 3);
+
+        Label emailLabel = new Label("email:");
+        TextField emailField = new TextField();
+        gridPane.add(emailLabel, 0, 4);
+        gridPane.add(emailField, 1, 4);
+
+        Label homepageLabel = new Label("homepage:");
+        TextField homepageField = new TextField();
+        gridPane.add(homepageLabel, 0, 5);
+        gridPane.add(homepageField, 1, 5);
+
+        Label birthdayLabel = new Label("birthday:");
+        TextField birthdayField = new TextField();
+        gridPane.add(birthdayLabel, 0, 6);
+        gridPane.add(birthdayField, 1, 6);
+
+        Label photoLabel = new Label("photo:");
+        TextField photoField = new TextField();
+        gridPane.add(photoLabel, 0, 7);
+        gridPane.add(photoField, 1, 7);
+
+        Label workplaceLabel = new Label("workplace:");
+        TextField workplaceField = new TextField();
+        gridPane.add(workplaceLabel, 0, 8);
+        gridPane.add(workplaceField, 1, 8);
+
+        Label homeAddressLabel = new Label("homeAddress:");
+        TextField homeAddressField = new TextField();
+        gridPane.add(homeAddressLabel, 0, 9);
+        gridPane.add(homeAddressField, 1, 9);
+
+        Label zipCodeLabel = new Label("zipCode:");
+        TextField zipCodeField = new TextField();
+        gridPane.add(zipCodeLabel, 0, 10);
+        gridPane.add(zipCodeField, 1, 10);
+
+        Label groupLabel = new Label("group:");
+        TextField groupField = new TextField();
+        gridPane.add(groupLabel, 0, 11);
+        gridPane.add(groupField, 1, 11);
+
+        Label noteLabel = new Label("note:");
+        TextField noteField = new TextField();
+        gridPane.add(noteLabel, 0, 12);
+        gridPane.add(noteField, 1, 12);
+
+        // 将GridPane添加到Dialog的内容中
+        dialog.getDialogPane().setContent(gridPane);
+
+        // 显示Dialog并等待用户的响应
+        dialog.showAndWait().ifPresentOrElse(
+                result -> System.out.println("姓名: " + nameField.getText() ),
+                () -> System.out.println("选择了取消!")
+        );
+
+        Contact contact = new Contact(nameField.getText(),telephoneField.getText(),mobileField.getText(),
+                instantMessagingField.getText(),emailField.getText(),homepageField.getText(),birthdayField.getText(),
+                photoLabel.getText(),workplaceField.getText(),homeAddressField.getText(),zipCodeLabel.getText(),
+                noteLabel.getText());
+//        user.changeContact(contact,nameField.getText(),telephoneField.getText(),mobileField.getText(),
+//                instantMessagingField.getText(),emailField.getText(),homepageField.getText(),birthdayField.getText(),
+//                photoLabel.getText(),workplaceField.getText(),homeAddressField.getText(),zipCodeLabel.getText(),
+//                noteLabel.getText());
+
+
         if(user.addContact(contact)){
             setTableView(user.getAllContacts());
         }else{
@@ -260,7 +355,101 @@ public class EmailBoxController {
     }
     //修改信息
     private void editInfo(){
+        if(chosenContacts.isEmpty()){
+            System.out.println("No selected contact");
+            return;
+        }
+        if(chosenContacts.size()!=1){
+            System.out.println("select over one");
+            return ;
+        }
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setHeaderText("输⼊你的姓名: ");
+        GridPane gridPane = new GridPane();
+        gridPane.setPadding(new Insets(10));
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
 
+        // 第一个文本框和标签
+        Label nameLabel = new Label("name:");
+        TextField nameField = new TextField();
+        gridPane.add(nameLabel, 0, 0);
+        gridPane.add(nameField, 1, 0);
+
+        // 第二个文本框和标签
+        Label telephoneLabel = new Label("telephone:");
+        TextField telephoneField = new TextField();
+        gridPane.add(telephoneLabel, 0, 1);
+        gridPane.add(telephoneField, 1, 1);
+
+        Label mobileLabel = new Label("mobile:");
+        TextField mobileField = new TextField();
+        gridPane.add(mobileLabel, 0, 2);
+        gridPane.add(mobileField, 1, 2);
+
+        Label instantMessagingLabel = new Label("instantMessaging:");
+        TextField instantMessagingField = new TextField();
+        gridPane.add(instantMessagingLabel, 0, 3);
+        gridPane.add(instantMessagingField, 1, 3);
+
+        Label emailLabel = new Label("email:");
+        TextField emailField = new TextField();
+        gridPane.add(emailLabel, 0, 4);
+        gridPane.add(emailField, 1, 4);
+
+        Label homepageLabel = new Label("homepage:");
+        TextField homepageField = new TextField();
+        gridPane.add(homepageLabel, 0, 5);
+        gridPane.add(homepageField, 1, 5);
+
+        Label birthdayLabel = new Label("birthday:");
+        TextField birthdayField = new TextField();
+        gridPane.add(birthdayLabel, 0, 6);
+        gridPane.add(birthdayField, 1, 6);
+
+        Label photoLabel = new Label("photo:");
+        TextField photoField = new TextField();
+        gridPane.add(photoLabel, 0, 7);
+        gridPane.add(photoField, 1, 7);
+
+        Label workplaceLabel = new Label("workplace:");
+        TextField workplaceField = new TextField();
+        gridPane.add(workplaceLabel, 0, 8);
+        gridPane.add(workplaceField, 1, 8);
+
+        Label homeAddressLabel = new Label("homeAddress:");
+        TextField homeAddressField = new TextField();
+        gridPane.add(homeAddressLabel, 0, 9);
+        gridPane.add(homeAddressField, 1, 9);
+
+        Label zipCodeLabel = new Label("zipCode:");
+        TextField zipCodeField = new TextField();
+        gridPane.add(zipCodeLabel, 0, 10);
+        gridPane.add(zipCodeField, 1, 10);
+
+        Label groupLabel = new Label("group:");
+        TextField groupField = new TextField();
+        gridPane.add(groupLabel, 0, 11);
+        gridPane.add(groupField, 1, 11);
+
+        Label noteLabel = new Label("note:");
+        TextField noteField = new TextField();
+        gridPane.add(noteLabel, 0, 12);
+        gridPane.add(noteField, 1, 12);
+
+        // 将GridPane添加到Dialog的内容中
+        dialog.getDialogPane().setContent(gridPane);
+
+        // 显示Dialog并等待用户的响应
+        dialog.showAndWait().ifPresentOrElse(
+                result -> System.out.println("姓名: " + nameField.getText() ),
+                () -> System.out.println("选择了取消!")
+        );
+
+        user.changeContact(chosenContacts.get(0),nameField.getText(),telephoneField.getText(),mobileField.getText(),
+                instantMessagingField.getText(),emailField.getText(),homepageField.getText(),birthdayField.getText(),
+                photoLabel.getText(),workplaceField.getText(),homeAddressField.getText(),zipCodeLabel.getText(),
+                noteLabel.getText());
     }
     //调整分组
     private void editGroup(){
