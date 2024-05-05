@@ -1,8 +1,5 @@
 package User;
 
-import tool.CSVExporter;
-import tool.VCardExporter;
-
 import java.util.ArrayList;
 import java.util.List;
 

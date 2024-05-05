@@ -35,7 +35,7 @@ public class Contact {
         this.workplace = workplace;
         this.homeAddress = homeAddress;
         this.zipCode = zipCode;
-        this.group = null;
+        this.group = "";
         this.note = note;
     }
 

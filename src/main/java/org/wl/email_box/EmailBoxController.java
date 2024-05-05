@@ -181,6 +181,10 @@ public class EmailBoxController {
         dialog.setHeaderText("输⼊组名: ");
         dialog.showAndWait().ifPresentOrElse(
                 result -> {
+                    if(result.isEmpty()){
+                        System.out.println("Null input");
+                        return;
+                    }
                     Group group = new Group(result);
                     for(Contact contact : chosenContacts){
                         group.addContact(contact);
@@ -227,15 +231,81 @@ public class EmailBoxController {
             //刷新界面
             setListView();
             setTableView(user.getAllContacts());
-        }else {
+        } else {
             System.out.println("delete group fail");
         }
     }
 
-    //编辑联系人，如何处理联系人分组改变
+    //编辑联系人
+    //询问修改信息还是分组
     @FXML
     void editContact(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.NONE, "编辑联系人信息or修改分组：",
+                ButtonType.CANCEL,
+                new ButtonType("Info", ButtonBar.ButtonData.OTHER),
+                new ButtonType("Group", ButtonBar.ButtonData.OTHER)
+        );
+        alert.setTitle("编辑联系人"); // 设置对话框标题
+        alert.showAndWait().ifPresent(response -> {
+            if(response.getButtonData().isCancelButton()){
+                alert.close();
+            } else if (response.getText().equals("Info")) {
+                editInfo();
+            } else if (response.getText().equals("Group")) {
+                editGroup();
+            } else {
+                System.out.println("choose error");
+            }
+        });
+    }
+    //修改信息
+    private void editInfo(){
 
+    }
+    //调整分组
+    private void editGroup(){
+        if(chosenContacts.isEmpty()){
+            System.out.println("No selected contact");
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.NONE, "将联系人移出组or移到别的组：",
+                ButtonType.CANCEL,
+                new ButtonType("OutGroup", ButtonBar.ButtonData.OTHER),
+                new ButtonType("ToGroup", ButtonBar.ButtonData.OTHER)
+        );
+        alert.setTitle("EditGroup");
+        alert.showAndWait().ifPresent(response -> {
+            if(response.getButtonData().isCancelButton()){
+                alert.close();
+            } else if (response.getText().equals("OutGroup")) {
+                if(user.removeFromGroup(chosenContacts)){;
+                    //刷新界面
+                    setListView();
+                    setTableView(user.getAllContacts());
+                }
+            } else if (response.getText().equals("ToGroup")) {
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setHeaderText("（选中联系人将移到该组）输⼊组名：");
+                dialog.showAndWait().ifPresentOrElse(
+                        result -> {
+                            if(result.isEmpty()){
+                                System.out.println("Null input");
+                                Group group = user.findGroup(result);
+                                if(user.addToGroup(chosenContacts,group)){
+                                    //刷新界面
+                                    setListView();
+                                    setTableView(user.getAllContacts());
+                                }else{
+                                    System.out.println("edit group fail");
+                                }
+                            }
+                        },
+                        () -> System.out.println("cancel")
+                );
+            } else {
+                System.out.println("choose error");
+            }
+        });
     }
 
     @FXML
@@ -249,12 +319,12 @@ public class EmailBoxController {
         choiceDialog.setTitle("Export");
         choiceDialog.setHeaderText("选择要导出的联系人：");
         choiceDialog.showAndWait().ifPresentOrElse(
-                res -> {
-                    if(res.equals("ALL")){
+                result -> {
+                    if(result.equals("ALL")){
                         exportFormChoose(user.getAllContacts());
-                    }else if(res.equals("SELECTED")){
+                    } else if(result.equals("SELECTED")){
                         exportFormChoose(chosenContacts);
-                    }else {System.out.println("type select error");}
+                    } else {System.out.println("type select error");}
                 },
                 ()->{System.out.println("cancel");}
         );
@@ -272,9 +342,9 @@ public class EmailBoxController {
                 result -> {
                     if(result.equals("CSV")){
                         CSVExporter.exportContacts(contacts);
-                    }else if(result.equals("vCard")){
+                    } else if(result.equals("vCard")){
                         VCardExporter.exportContacts(contacts);
-                    }else {System.out.println("type select error");}
+                    } else {System.out.println("type select error");}
                 },
                 () -> {System.out.println("no select");}
         );
@@ -291,7 +361,7 @@ public class EmailBoxController {
                 user = new User(CSVImporter.importContacts(file.getName()));
             } else if (file.getName().toLowerCase().endsWith(".vcf")) {
                 user = new User(VCardImporter.importContacts(file.getName()));
-            }else{
+            } else {
                 System.out.println("file type error");
             }
             //更新界面
