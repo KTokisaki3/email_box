@@ -74,7 +74,7 @@ public class User {
     public boolean removeGroup(Group group){
         if(groups.contains(group)){
             for(Contact contact : group.getContacts()){
-                contact.setGroup(null);
+                contact.setGroup("");
                 otherContacts.add(contact);
             }
             groups.remove(group);
@@ -155,7 +155,7 @@ public class User {
                 }
             }
             System.out.println("联系组不存在！");
-            contact.setGroup(null);
+            contact.setGroup("");
         }
         return true;
     }

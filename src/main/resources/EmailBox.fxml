@@ -55,6 +55,7 @@
             <TableColumn fx:id="workplaceTableColumn" prefWidth="75.0" text="Workplace" />
             <TableColumn fx:id="homeAddressTableColumn" prefWidth="75.0" text="HomeAddress" />
             <TableColumn fx:id="zipCodeTableColumn" prefWidth="75.0" text="ZipCode" />
+            <TableColumn fx:id="groupTableColumn" prefWidth="104.0" text="Group" />
             <TableColumn fx:id="noteTableColumn" prefWidth="75.0" text="Note" />
         </columns>
          <BorderPane.margin>

@@ -26,7 +26,7 @@ public class Group {
 
     public void removeContact(Contact contact) {
         contacts.remove(contact);
-        contact.setGroup(null);
+        contact.setGroup("");
     }
 
     public boolean containContact(Contact contact){

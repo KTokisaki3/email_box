@@ -213,4 +213,10 @@ public class Contact {
         vCard.append("END:VCARD\n");
         return vCard.toString();
     }
+
+    public boolean isEmpty(){
+        return (name.isEmpty() && telephone.isEmpty() && mobile.isEmpty() && email.isEmpty() && homepage.isEmpty() && birthday.isEmpty()
+                && photo.isEmpty() && workplace.isEmpty() && homeAddress.isEmpty() && zipCode.isEmpty() && note.isEmpty());
+    }
+
 }

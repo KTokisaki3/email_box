@@ -3,6 +3,7 @@ package org.wl.email_box;
 import User.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -125,36 +126,18 @@ public class EmailBoxController {
     @FXML
     private TableColumn<Contact, String> zipCodeTableColumn;
 
-    private List<Contact> chosenContacts;                    //选中联系人
+    @FXML
+    private TableColumn<Contact,String> groupTableColumn;
+
+    private List<Contact> chosenContacts = new ArrayList<>();                    //选中联系人
 
     private String chosenGroupName;                             //选中组
 
-    private User user;
+    private User user = new User();
 
-    public EmailBoxController(){
-        user = new User();
-        chosenContacts = new ArrayList<>();
-        groupListView = new ListView<>();
-        contactTableView = new TableView<>();
-        groupListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        contactTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        groupListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            chosenGroupName = newValue;
-            setTableView(user.findGroup(chosenGroupName).getContacts());
-        });
-        contactTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
-            if(newValue != null) {
-                selectedContact(newValue);
-            }
-        });
-    }
 
     @FXML
     void addContact(ActionEvent event) {
-        //
-        //
-        //contact为创建新的联系人
-        //创建新窗口
         TextInputDialog dialog = new TextInputDialog();
         dialog.setHeaderText("输⼊你的姓名: ");
         GridPane gridPane = new GridPane();
@@ -219,10 +202,10 @@ public class EmailBoxController {
         gridPane.add(zipCodeLabel, 0, 10);
         gridPane.add(zipCodeField, 1, 10);
 
-        Label groupLabel = new Label("group:");
-        TextField groupField = new TextField();
-        gridPane.add(groupLabel, 0, 11);
-        gridPane.add(groupField, 1, 11);
+        Label groupLabel1 = new Label("group:");
+        Label groupLabel2 = new Label("新建联系人默认没有分组");
+        gridPane.add(groupLabel1, 0, 11);
+        gridPane.add(groupLabel2, 1, 11);
 
         Label noteLabel = new Label("note:");
         TextField noteField = new TextField();
@@ -231,28 +214,29 @@ public class EmailBoxController {
 
         // 将GridPane添加到Dialog的内容中
         dialog.getDialogPane().setContent(gridPane);
-
         // 显示Dialog并等待用户的响应
         dialog.showAndWait().ifPresentOrElse(
-                result -> System.out.println("姓名: " + nameField.getText() ),
-                () -> System.out.println("选择了取消!")
-        );
-
-        Contact contact = new Contact(nameField.getText(),telephoneField.getText(),mobileField.getText(),
-                instantMessagingField.getText(),emailField.getText(),homepageField.getText(),birthdayField.getText(),
-                photoLabel.getText(),workplaceField.getText(),homeAddressField.getText(),zipCodeLabel.getText(),
-                noteLabel.getText());
-//        user.changeContact(contact,nameField.getText(),telephoneField.getText(),mobileField.getText(),
-//                instantMessagingField.getText(),emailField.getText(),homepageField.getText(),birthdayField.getText(),
-//                photoLabel.getText(),workplaceField.getText(),homeAddressField.getText(),zipCodeLabel.getText(),
-//                noteLabel.getText());
-
-
-        if(user.addContact(contact)){
-            setTableView(user.getAllContacts());
-        }else{
-            System.out.println("add contact fail");
-        }
+                result ->  {
+                    Contact contact = new Contact(nameField.getText(),telephoneField.getText(),mobileField.getText(),
+                            instantMessagingField.getText(),emailField.getText(),homepageField.getText(),birthdayField.getText(),
+                            photoField.getText(),workplaceField.getText(),homeAddressField.getText(),zipCodeField.getText(),
+                            noteField.getText());
+                    if(contact.isEmpty()){
+                        System.out.println("Contact is empty");
+                        return;
+                    }
+                    if(user.addContact(contact)){
+                        System.out.println("add:" + contact);
+                        //刷新界面
+                        setTableView(user.getAllContacts());
+                    }else{
+                        System.out.println("add contact fail");
+                    }
+                },
+                () -> {
+                    System.out.println("cancel");
+                    }
+                );
     }
 
     @FXML
@@ -285,6 +269,7 @@ public class EmailBoxController {
                         group.addContact(contact);
                     }
                     if(user.addGroup(group)){
+                        System.out.println("add:" + group);
                         //刷新界面
                         setListView();
                         setTableView(user.getAllContacts());
@@ -302,18 +287,16 @@ public class EmailBoxController {
             System.out.println("No select contact");
             return;
         }
-        if(chosenContacts.size() == 1){
-            Contact contact = chosenContacts.get(0);
+        for(Contact contact : chosenContacts){
             if(user.removeContact(contact)){
-                //刷新界面
-                setListView();
-                setTableView(user.getAllContacts());
+                System.out.println("delete:" + contact );
             }else {
                 System.out.println("delete contact fail");
             }
-        }else{
-            System.out.println("select over one");
         }
+        //刷新界面
+        setListView();
+        setTableView(user.getAllContacts());
     }
 
     @FXML
@@ -323,6 +306,8 @@ public class EmailBoxController {
             return;
         }
         if(user.removeGroup(user.findGroup(chosenGroupName))){
+            System.out.println("delete:" + chosenGroupName);
+            chosenGroupName = "";
             //刷新界面
             setListView();
             setTableView(user.getAllContacts());
@@ -427,29 +412,35 @@ public class EmailBoxController {
         gridPane.add(zipCodeLabel, 0, 10);
         gridPane.add(zipCodeField, 1, 10);
 
-        Label groupLabel = new Label("group:");
-        TextField groupField = new TextField();
-        gridPane.add(groupLabel, 0, 11);
-        gridPane.add(groupField, 1, 11);
 
         Label noteLabel = new Label("note:");
         TextField noteField = new TextField();
-        gridPane.add(noteLabel, 0, 12);
-        gridPane.add(noteField, 1, 12);
+        gridPane.add(noteLabel, 0, 11);
+        gridPane.add(noteField, 1, 11);
 
         // 将GridPane添加到Dialog的内容中
         dialog.getDialogPane().setContent(gridPane);
 
         // 显示Dialog并等待用户的响应
         dialog.showAndWait().ifPresentOrElse(
-                result -> System.out.println("姓名: " + nameField.getText() ),
-                () -> System.out.println("选择了取消!")
+                result -> {
+                    Contact contact = new Contact(nameField.getText(),telephoneField.getText(),mobileField.getText(),
+                            instantMessagingField.getText(),emailField.getText(),homepageField.getText(),birthdayField.getText(),
+                            photoField.getText(),workplaceField.getText(),homeAddressField.getText(),zipCodeField.getText(),
+                            noteField.getText());
+                    if(contact.isEmpty()){
+                        System.out.println("empty");
+                        return;
+                    }
+                    user.changeContact(chosenContacts.get(0),nameField.getText(),telephoneField.getText(),mobileField.getText(),
+                        instantMessagingField.getText(),emailField.getText(),homepageField.getText(),birthdayField.getText(),
+                        photoField.getText(),workplaceField.getText(),homeAddressField.getText(),zipCodeField.getText(),
+                        noteField.getText());
+                    //刷新界面
+                    setTableView(user.getAllContacts());
+                    },
+                () -> System.out.println("cancel")
         );
-
-        user.changeContact(chosenContacts.get(0),nameField.getText(),telephoneField.getText(),mobileField.getText(),
-                instantMessagingField.getText(),emailField.getText(),homepageField.getText(),birthdayField.getText(),
-                photoLabel.getText(),workplaceField.getText(),homeAddressField.getText(),zipCodeLabel.getText(),
-                noteLabel.getText());
     }
     //调整分组
     private void editGroup(){
@@ -467,25 +458,30 @@ public class EmailBoxController {
             if(response.getButtonData().isCancelButton()){
                 alert.close();
             } else if (response.getText().equals("OutGroup")) {
-                if(user.removeFromGroup(chosenContacts)){;
+                if(user.removeFromGroup(chosenContacts)){
+                    System.out.println("out group");
                     //刷新界面
                     setListView();
                     setTableView(user.getAllContacts());
+                } else {
+                    System.out.println("out group fail");
                 }
             } else if (response.getText().equals("ToGroup")) {
                 TextInputDialog dialog = new TextInputDialog();
                 dialog.setHeaderText("（选中联系人将移到该组）输⼊组名：");
                 dialog.showAndWait().ifPresentOrElse(
                         result -> {
-                            if(result.isEmpty()){
+                            if(result.isEmpty()) {
                                 System.out.println("Null input");
+                            } else {
                                 Group group = user.findGroup(result);
                                 if(user.addToGroup(chosenContacts,group)){
+                                    System.out.println("to group:" + group);
                                     //刷新界面
                                     setListView();
                                     setTableView(user.getAllContacts());
-                                }else{
-                                    System.out.println("edit group fail");
+                                } else {
+                                    System.out.println("to group fail");
                                 }
                             }
                         },
@@ -561,17 +557,20 @@ public class EmailBoxController {
 
     @FXML
     void listAll(ActionEvent event) {
+        setListView();
         setTableView(user.getAllContacts());
     }
 
     @FXML
     void listUngroup(ActionEvent event) {
+        setListView();
         setTableView(user.getOtherContacts());
     }
 
     private void setTableView(List<Contact> contacts){
-        ObservableList<Contact> data = FXCollections.observableList(contacts);
-        contactTableView = new TableView<>(data);
+        chosenContacts.clear();
+        ObservableList<Contact> data = FXCollections.observableArrayList();
+        data.addAll(contacts);
         nameTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         telephoneTableColumn.setCellValueFactory(new PropertyValueFactory<>("telephone"));
         mobileTableColumn.setCellValueFactory(new PropertyValueFactory<>("mobile"));
@@ -583,19 +582,46 @@ public class EmailBoxController {
         workplaceTableColumn.setCellValueFactory(new PropertyValueFactory<>("workplace"));
         homeAddressTableColumn.setCellValueFactory(new PropertyValueFactory<>("homeAddress"));
         zipCodeTableColumn.setCellValueFactory(new PropertyValueFactory<>("zipCode"));
-        noteTableColumn.setCellValueFactory(new PropertyValueFactory<>("node"));
+        groupTableColumn.setCellValueFactory(new PropertyValueFactory<>("group"));
+        noteTableColumn.setCellValueFactory(new PropertyValueFactory<>("note"));
+        contactTableView.setItems(data);
+        contactTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        contactTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Contact>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    // 处理新添加的选定项
+                    for(Contact contact : change.getAddedSubList()){
+                        if(!chosenContacts.contains(contact)){
+                            chosenContacts.add(contact);
+                        }
+                    }
+                }
+                if (change.wasRemoved()) {
+                    // 处理被移除的选定项
+                    for(Contact contact : change.getAddedSubList()){
+                        chosenContacts.remove(contact);
+                    }
+                }
+            }
+        });
+        contactTableView.refresh();
     }
 
     private void setListView(){
+        chosenGroupName="";
+        groupListView.getItems().clear();
         for(Group group : user.getGroups()){
             groupListView.getItems().add(group.getName());
         }
+        groupListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        groupListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null && !newValue.isEmpty()){
+                chosenGroupName = newValue;
+                setTableView(user.findGroup(chosenGroupName).getContacts());
+            }
+        });
+        groupListView.refresh();
     }
-
-    private void selectedContact(Contact contact){
-        chosenContacts = contactTableView.getSelectionModel().getSelectedItems();
-    }
-
 
     //搜索
     @FXML
