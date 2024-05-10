@@ -631,7 +631,7 @@ public class EmailBoxController {
             contactTableView.getItems().clear();
             // 根据搜索关键字过滤联系人列表,可优化
             for (Contact contact : contacts) {
-                if (contact.getName().toLowerCase().contains(newValue.toLowerCase())) {
+                if (contact.toString().toLowerCase().contains(newValue.toLowerCase())) {
                     contactTableView.getItems().add(contact);
                 }
             }
