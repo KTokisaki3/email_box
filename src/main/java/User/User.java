@@ -88,18 +88,18 @@ public class User {
     //修改联系人
     public  void changeContact(Contact contact,String name, String telephone, String mobile, String instantMessaging, String email, String homepage,
                                String birthday, String photo, String workplace, String homeAddress, String zipCode,  String note){
-        contact.setName(name);
-        contact.setTelephone(telephone);
-        contact.setMobile(mobile);
-        contact.setInstantMessaging(instantMessaging);
-        contact.setEmail(email);
-        contact.setHomepage(homepage);
-        contact.setBirthday(birthday);
-        contact.setPhoto(photo);
-        contact.setWorkplace(workplace);
-        contact.setHomeAddress(homeAddress);
-        contact.setZipCode(zipCode);
-        contact.setNote(note);
+        if(!name.isEmpty()) contact.setName(name);
+        if(!telephone.isEmpty()) contact.setTelephone(telephone);
+        if(!mobile.isEmpty()) contact.setMobile(mobile);
+        if(!instantMessaging.isEmpty()) contact.setInstantMessaging(instantMessaging);
+        if(!email.isEmpty()) contact.setEmail(email);
+        if(!homepage.isEmpty()) contact.setHomepage(homepage);
+        if(!birthday.isEmpty()) contact.setBirthday(birthday);
+        if(!photo.isEmpty()) contact.setPhoto(photo);
+        if(!workplace.isEmpty()) contact.setWorkplace(workplace);
+        if(!homeAddress.isEmpty()) contact.setHomeAddress(homeAddress);
+        if(!zipCode.isEmpty())contact.setZipCode(zipCode);
+        if(!note.isEmpty()) contact.setNote(note);
     }
 
     //将联系人加入分组

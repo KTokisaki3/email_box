@@ -629,12 +629,14 @@ public class EmailBoxController {
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             List<Contact> contacts = contactTableView.getItems();
             contactTableView.getItems().clear();
-            // 根据搜索关键字过滤联系人列表,可优化
+            // 根据搜索关键字过滤联系人列表
             for (Contact contact : contacts) {
                 if (contact.toString().toLowerCase().contains(newValue.toLowerCase())) {
                     contactTableView.getItems().add(contact);
                 }
             }
+            contactTableView.refresh();
+            
         });
     }
 }
